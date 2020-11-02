@@ -1,5 +1,5 @@
 from typing import Optional
-from fastapi import FastAPI
+from fastapi import FastAPI, Header
 
 from pydantic import BaseModel
 
@@ -46,3 +46,10 @@ class Item(BaseModel):
 @app.post("/items/")
 async def create_item(item: Item):
     return item
+
+
+# Header
+
+@app.get("/client")
+async def read_client(user_agent: Optional[str] = Header(None)):
+    return {"User-Agent": user_agent}
