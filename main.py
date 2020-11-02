@@ -23,7 +23,11 @@ documents = {'1': '111', '2': '222'}
 async def read_documento(documento_uuid):
     document = documents.get(documento_uuid)
     if not document:
-        raise HTTPException(status_code=404, detail="Document not found")
+        raise HTTPException(
+            status_code=404,
+            detail="Document not found",
+            headers={"X-Error": "There goes my error"},
+        )
     return {"documento_uuid": documento_uuid}
 
 
