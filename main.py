@@ -1,5 +1,5 @@
 from typing import Optional
-from fastapi import FastAPI, Header
+from fastapi import FastAPI, Header, HTTPException
 
 from pydantic import BaseModel
 
@@ -16,8 +16,14 @@ async def read_documento():
     return [{"documento_uuid": "uuid1"}, {"documento_uuid": "uuid1"}]
 
 
+documents = {'1': '111', '2': '222'}
+
+
 @app.get("/documentos/{documento_uuid}")
 async def read_documento(documento_uuid):
+    document = documents.get(documento_uuid)
+    if not document:
+        raise HTTPException(status_code=404, detail="Document not found")
     return {"documento_uuid": documento_uuid}
 
 
