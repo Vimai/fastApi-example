@@ -1,3 +1,4 @@
+from bson import ObjectId
 from pymongo import MongoClient
 
 
@@ -11,8 +12,13 @@ class MongoRepository:
 
     def create_product(self, payload):
         products = self.db.products
-        products.insert_one(payload)
-        
+        product_id = products.insert_one(payload).inserted_id
+        return product_id
+
+    def update_product_name(self, product_id, product_name):
+        products = self.db.products
+        products.update_one({"_id": ObjectId(product_id)}, {"$set": {"name": product_name}})
+
 
 client = MongoClient(host='localhost',
                      port=27017,
