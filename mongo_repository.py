@@ -5,9 +5,9 @@ from pymongo import MongoClient
 class MongoRepository:
     def __init__(self):
         self.client = MongoClient(host='localhost',
-                              port=27017,
-                              username='root',
-                              password='password')
+                                  port=27017,
+                                  username='root',
+                                  password='password')
         self.db = self.client.projectdb
 
     def create_product(self, payload):
@@ -56,10 +56,5 @@ print(results)
 print('em lop 2: \n')
 for result in results:
     print(f"result: {result} and id: {result['_id']}")
-    
-    
+
 breakpoint()
-
-
-
-
