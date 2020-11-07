@@ -1,3 +1,6 @@
 uvicorn==0.12.2
 fastapi==0.61.1
 pymongo==3.11.0
+pydantic~=1.7.1
+requests~=2.24.0
+tortoise-orm~=0.16.17
