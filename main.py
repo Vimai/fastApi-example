@@ -9,8 +9,23 @@ from tortoise.contrib.fastapi import register_tortoise
 from tortoise.contrib.pydantic import pydantic_model_creator
 
 import requests
+import aiohttp
+import asyncio
 
 app = FastAPI()
+
+session = None
+
+
+@app.on_event('startup')
+async def startup_event():
+    global session
+    session = aiohttp.ClientSession()
+
+
+@app.on_event('shutdown')
+async def shutdown_event():
+    await session.close()
 
 
 class City(Model):
@@ -19,10 +34,14 @@ class City(Model):
     timezone = fields.CharField(50)
 
     def current_time(self) -> str:
-        r = requests.get(f'http://worldtimeapi.org/api/timezone/{self.timezone}')
-        response = r.json()
-        current_time = response.get('datetime') or ''
-        return current_time
+        return ''
+
+    @classmethod
+    async def get_current_time(cls, obj, session):
+        async with session.get(f'http://worldtimeapi.org/api/timezone/{obj.timezone}') as response:
+            result = await response.json()
+            current_time = result.get('datetime') or ''
+            obj.current_time = current_time
 
     class PydanticMeta:
         computed = ('current_time', )
@@ -41,8 +60,16 @@ async def root():
 
 @app.get("/cities")
 async def get_cities():
-    response = await City_Paydantic.from_queryset(City.all())
-    return response
+    cities = await City_Paydantic.from_queryset(City.all())
+    global session
+    tasks = []
+    for city in cities:
+        task = asyncio.create_task(City.get_current_time(city, session))
+        tasks.append(task)
+
+    await asyncio.gather(*tasks)
+
+    return cities
 
 
 @app.get("/cities/{city_id}")
