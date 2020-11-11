@@ -57,4 +57,4 @@ print('em lop 2: \n')
 for result in results:
     print(f"result: {result} and id: {result['_id']}")
 
-breakpoint()
+
