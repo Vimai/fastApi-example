@@ -53,6 +53,7 @@ posts.update_one({"author": "Mike3"}, {"$set": {"author": "autor 3"}})
 
 results = posts.find({})
 print(results)
+
 print('em lop 2: \n')
 for result in results:
     print(f"result: {result} and id: {result['_id']}")
