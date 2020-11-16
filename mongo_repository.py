@@ -46,6 +46,7 @@ print(db.list_collection_names())
 results = posts.find({"author": "Mike3"})
 print(results)
 print('em lop: \n')
+
 for result in results:
     print(f"result: {result} and id: {result['_id']}")
 
